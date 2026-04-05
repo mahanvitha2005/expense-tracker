@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expense Tracker Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<h1>Expense Tracker 💰</h1>
+
+<div class="container">
+
+    <h3>Balance</h3>
+    <h2 id="balance">₹0</h2>
+
+    <div class="inc-exp">
+        <div>
+            <h4>Income</h4>
+            <p id="income">₹0</p>
+        </div>
+        <div>
+            <h4>Expense</h4>
+            <p id="expense">₹0</p>
+        </div>
+    </div>
+
+    <form id="form">
+        <input type="text" id="text" placeholder="Description" required>
+        <input type="number" id="amount" placeholder="Amount (+/-)" required>
+        <button>Add</button>
+    </form>
+
+    <h3>Filter</h3>
+    <div class="filters">
+        <button onclick="filterData('all')">All</button>
+        <button onclick="filterData('today')">Today</button>
+        <button onclick="filterData('week')">This Week</button>
+        <button onclick="filterData('month')">This Month</button>
+    </div>
+
+    <h3>History</h3>
+    <ul id="list"></ul>
+
+    <h3>Analytics</h3>
+    <canvas id="pieChart"></canvas>
+    <canvas id="barChart"></canvas>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
