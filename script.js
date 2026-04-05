@@ -10,7 +10,7 @@ let transactions = [];
 
 // 📥 LOAD DATA FROM BACKEND
 async function loadTransactions() {
-    const res = await fetch("http://localhost:5000/transactions");
+    const res = await fetch(https://expense-tracking-backend-3.onrender.com);
     transactions = await res.json();
     updateUI(transactions);
 }
