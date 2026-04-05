@@ -1,78 +1,69 @@
-const balance = document.getElementById("balance");
-const income = document.getElementById("income");
-const expense = document.getElementById("expense");
+const API_URL = "https://expense-tracking-backend-3.onrender.com";
+
 const list = document.getElementById("list");
-const form = document.getElementById("form");
-const text = document.getElementById("text");
-const amount = document.getElementById("amount");
+const balance = document.getElementById("balance");
 
-let transactions = [];
-
-// 📥 LOAD DATA FROM BACKEND
+// Load transactions
 async function loadTransactions() {
-    const res = await fetch(https://expense-tracking-backend-3.onrender.com);
-    transactions = await res.json();
-    updateUI(transactions);
+  const res = await fetch(API_URL);
+  const data = await res.json();
+
+  list.innerHTML = ""; // clear list
+
+  let total = 0;
+
+  data.forEach(txn => {
+    const li = document.createElement("li");
+
+    li.innerHTML = `
+      ${txn.text} : ₹${txn.amount}
+      <button onclick="deleteTransaction('${txn._id}')">X</button>
+    `;
+
+    list.appendChild(li);
+
+    total += txn.amount;
+  });
+
+  balance.innerText = total;
 }
 
-// ➕ ADD TRANSACTION
-form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+// Add transaction
+async function addTransaction() {
+  const text = document.getElementById("text").value;
+  const amount = document.getElementById("amount").value;
 
-    const newTransaction = {
-        text: text.value,
-        amount: +amount.value
-    };
+  if (!text || !amount) {
+    alert("Enter all fields");
+    return;
+  }
 
-    await fetch("http://localhost:5000/transactions", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(newTransaction)
-    });
+  await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      text: text,
+      amount: Number(amount)
+    })
+  });
 
-    loadTransactions();
+  // clear inputs
+  document.getElementById("text").value = "";
+  document.getElementById("amount").value = "";
 
-    text.value = "";
-    amount.value = "";
-});
+  loadTransactions(); // refresh UI
+}
 
-// ❌ DELETE TRANSACTION
+// Delete transaction
 async function deleteTransaction(id) {
-    await fetch(`http://localhost:5000/transactions/${id}`, {
-        method: "DELETE"
-    });
+  await fetch(`${API_URL}/${id}`, {
+    method: "DELETE"
+  });
 
-    loadTransactions();
+  loadTransactions();
 }
 
-// 🧾 UPDATE UI
-function updateUI(data) {
-    list.innerHTML = "";
-
-    let total = 0, inc = 0, exp = 0;
-
-    data.forEach(t => {
-        const li = document.createElement("li");
-
-        li.innerHTML = `
-            ${t.text}: ₹${t.amount}
-            <button onclick="deleteTransaction('${t._id}')">X</button>
-        `;
-
-        list.appendChild(li);
-
-        total += t.amount;
-        if (t.amount > 0) inc += t.amount;
-        else exp += t.amount;
-    });
-
-    balance.innerText = `₹${total}`;
-    income.innerText = `₹${inc}`;
-    expense.innerText = `₹${Math.abs(exp)}`;
-    
-}
-
-// 🚀 INITIAL LOAD
+// Initial load
 loadTransactions();
